@@ -8,6 +8,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
+  # Use the flake-utils lib to easily create a multi-system flake
   flake-utils.lib.eachDefaultSystem (system:
     let
       # You can define overlays as functions using the example below
@@ -16,7 +17,7 @@
         yarn = prev.yarn.override { nodejs = final.pkgs.nodejs-16_x; };
       });
 
-      # This function applies our overlay to nixpkgs for all supported systems
+      # 
       pkgs =
         import nixpkgs {
           inherit system;
@@ -28,7 +29,7 @@
       # For our outputs, we'll return the modified Yarn package from our overridden nixpkgs.
       packages.yarn = pkgs.yarn;
 
-      # Set yarn as the default package output for this flake
+      # [Optional] Set yarn as the default package output for this flake
       defaultPackage = self.packages.yarn;
     }
   );
