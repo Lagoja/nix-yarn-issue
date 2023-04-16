@@ -1,5 +1,21 @@
 # `yarn` 1.x installed through `nix` issue (see [issue](https://github.com/NixOS/nixpkgs/issues/145634))
 
+## Fix for this Issue using Devbox 0.4.7-dev
+
+To resolve this issue, you need to modify the version of NodeJS used by the yarn package in Nixpkg 21.11. This can be done by creating a Nix Flake that exports the overridden `yarn` package (see yarn-overlay/flake.nix), and then importing it in your devbox configuration:
+
+```json
+{
+   "packages": [
+      "path:./yarn-overlay#yarn"
+      "fnm"
+   ]
+   ...
+}
+```
+
+The flake.nix file in `yarn-overlay` can be used as a template for additional overlays -- simply add
+
 ## Steps to reproduce
 
 1. make sure to install `nixpkgs.yarn` & `nixpkgs.fnm` (or `nvm`)
