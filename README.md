@@ -14,7 +14,9 @@ To resolve this issue, you need to modify the version of NodeJS used by the yarn
 }
 ```
 
-The flake.nix file in `yarn-overlay` can be used as a template for additional overlays -- simply add
+Note: you will need Devbox 0.4.7-dev or later for this to work. You can try it out by exporting `DEVBOX_VERSION=0.4.7-dev` before running `devbox shell`.
+
+The flake.nix file in `yarn-overlay` can be used as a template for your own overlays.
 
 ## Steps to reproduce
 
