@@ -8,12 +8,8 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
+  flake-utils.lib.eachDefaultSystem (system:
     let
-      # Helper function that let's us create a nixpkg for all of our supported systems
-      supportedSystems =
-        [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-
       # You can define overlays as functions using the example below
       # This overlay will modify yarn to use nodejs-16_x
       yarnOverlay = (final: prev: {
@@ -21,21 +17,20 @@
       });
 
       # This function applies our overlay to nixpkgs for all supported systems
-      nixPkgsFor = forAllSystems (system:
+      pkgs =
         import nixpkgs {
           inherit system;
           # Add your overlays to the list below. Note that they will be applied in order
           overlays = [ yarnOverlay ];
-        });
+        };
 
     in {
       # For our outputs, we'll return the modified Yarn package from our overridden nixpkgs.
-      packages = forAllSystems (system: 
-      let pkgs = nixPkgsFor.${system}; 
-      in { yarn = pkgs.yarn; });
+      packages.yarn = pkgs.yarn;
 
       # Set yarn as the default package output for this flake
-      defaultPackage = forAllSystems (system: self.packages.${system}.yarn);
-    };
+      defaultPackage = self.packages.yarn;
+    }
+  );
 }
 
